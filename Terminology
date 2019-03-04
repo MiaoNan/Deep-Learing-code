@@ -87,3 +87,5 @@ When you train your neural network for example, or evaluate it, you do the feedf
 epoch: 所有的样本都进入NN计算一遍叫做1 epoch
 
 num of iterations: 计算了多少次 batch
+
+Locally-Connected:局部连接（层）

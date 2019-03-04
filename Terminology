@@ -89,3 +89,13 @@ epoch: 所有的样本都进入NN计算一遍叫做1 epoch
 num of iterations: 计算了多少次 batch
 
 Locally-Connected:局部连接（层）
+
+filter:滤波器（CNN用）
+
+strides：步长（卷积或梯度下降）
+
+Convolutional：卷积
+
+LSTM：Long-Short Term Memory
+
+Recurrent：循环

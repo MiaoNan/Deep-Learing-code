@@ -99,3 +99,8 @@ Convolutional：卷积
 LSTM：Long-Short Term Memory
 
 Recurrent：循环
+
+cell: 一个 RNN 单元实例。
+
+external constants:外部常量
+

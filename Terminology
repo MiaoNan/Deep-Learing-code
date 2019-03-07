@@ -105,3 +105,5 @@ cell: 一个 RNN 单元实例。
 external constants:外部常量
 
 Gated Recurrent Unit：递归神经网络
+
+Exponential：指数的

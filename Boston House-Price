@@ -47,7 +47,7 @@ for i in range(k):
     val_data = train_data[i*num_val_samples: (i+1)*num_val_samples]
     val_targets = train_targets[i*num_val_samples: (i+1)*num_val_samples]
 
-    #Prepare the training dataa: data from all other partitions
+    #Prepare the training data: data from all other partitions
     partial_train_data = np.concatenate(
                             [train_data[: i*num_val_samples],
                              train_data[(i+1)*num_val_samples:]],

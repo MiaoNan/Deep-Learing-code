@@ -1,0 +1,58 @@
+#These codes are copied from https://blog.csdn.net/zhangkx91/article/details/77806772
+#Special thanks to the author
+
+#Genres of files are csv as examples.
+
+#===
+temp = list.files(pattern="*.csv")
+for (i in 1:length(temp)) assign(temp[i], read.csv(temp[i]))
+temp = list.files(pattern="*.csv")
+list2env(lapply(setNames(temp, make.names(gsub("*.csv$", "",temp))), read.csv), envir = .GlobalEnv)
+
+#===
+files = list.files(pattern="*.csv")
+myfiles = do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE)))
+
+#===
+cat *.csv > all.csv
+cat *.csv | grep -v ^Age > all.csv
+
+#===
+path <- "C:/Users/cfees/My Box Files/Fitness/"
+files <- list.files(path=path, pattern="*.csv")
+for(file in files)
+{
+  perpos <- which(strsplit(file, "")[[1]]==".")
+  assign(
+    gsub(" ","",substr(file, 1, perpos-1)), 
+    read.csv(paste(path,file,sep="")))
+}
+
+#===
+for(f in 1:length(List_of_filepaths)) {
+  file_name <- str_sub(string = List_of_filepaths[f], start = 46, end = -5)
+  file_df <- read_csv(List_of_filepaths[f])  
+  file_df <- file_df[,1:3] #if you only need the first three columns
+  assign( x = file_name, value = file_df, envir = .GlobalEnv)
+}
+
+#===
+temp = list.files(pattern=".csv$") #list all the files in dir that have .csv at the end
+for (i in 1:length(temp)) {
+  assign(temp[i], prettify(toJSON(read.csv(temp[i])))) #read each csv, convert to  JSON,make pretty, give it a name
+  write(get(temp[i]),paste(temp[i],"json", sep=".")) #write the json to a file
+}
+
+#===
+xlist<-list.files(pattern = "*.csv")
+for(i in xlist) { 
+  x <- read.csv((i))
+  assign(i, x)
+}
+
+#===
+temp <- list.files(pattern="*.csv")
+for (i in 1:length(temp)) {
+  temp2 = read.csv(temp[i], header = TRUE)
+  x <- rbind(x,temp2)
+}

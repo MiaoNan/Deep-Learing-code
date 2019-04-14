@@ -1,0 +1,9 @@
+%Load multiple pictures in MatLab
+%Codes are searched on the net, special thanks to the original author.
+
+fileform = 'F:\...\*.tiff';
+filepathsrc = 'F:\...\';  %Replace '...' with the file path.
+file = dir(fileform);
+for i = 1:length(file)
+myimg{i} = imread([filepathsrc, file(i).name]);
+end

@@ -1,0 +1,17 @@
+import os
+from os.path import join as pjoin
+from scipy import misc
+img_dir = '/home/liuyafei/facenet_facerecognition-master/train_dir/lfw/'  # 自己单独建的文件夹, 用于存放从lfw读取的图片
+def load_data(data_dir):  # data_dir是lfw数据集路径
+    count = 0
+    for guy in os.listdir(data_dir):  
+        person_dir = pjoin(data_dir, guy)  # lfw中文件夹的路径
+        for i in os.listdir(person_dir):
+            image_dir = pjoin(person_dir, i)  # lfw中每个文件夹中图片的路径
+            img22 = misc.imread(image_dir, mode='RGB')  # 读取lfw中每个文件夹中的图片
+            print(image_dir)
+            misc.imsave(pjoin(img_dir, i), img22) # 将lfw中读取的每个文件夹中的图片存入指定的文件夹
+            count = count+1
+        print(person_dir)
+    print(count)
+    return count

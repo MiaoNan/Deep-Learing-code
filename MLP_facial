@@ -1,0 +1,107 @@
+import numpy as np
+import cv2
+import dlib
+import os
+from keras.models import Sequential
+from keras.layers.core import Dense, Dropout, Activation
+from keras.utils import np_utils
+from sklearn.model_selection import train_test_split
+
+detector = dlib.get_frontal_face_detector()
+predictor = dlib.shape_predictor('/Users/mac/Desktop/test/shape_predictor_68_face_landmarks.dat')
+
+# cv2读取图像
+
+
+f="/Volumes/Exchange/resized"
+fs=os.listdir(f)
+length=0
+for f1 in fs:
+    length+=1
+
+label = np.zeros([length], dtype=int)
+k=0
+data=np.zeros((length,16384))#213
+for f1 in fs:
+    tmp_path = os.path.join(f, f1)
+    if not os.path.isdir(tmp_path):
+        img = cv2.imread(tmp_path, 1)
+        img_gray = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+        # 人脸数rects
+        rects = detector(img_gray, 0)
+        for i in range(len(rects)):
+            landmarks = np.matrix([[p.x, p.y] for p in predictor(img,rects[i]).parts()])
+            a = np.zeros((128, 128))
+            for idx, point in enumerate(landmarks):
+                # 68点的坐标
+                if point[0, 0]<128:
+                    if point[0,1]<128:
+                        pos = (point[0, 0], point[0, 1])
+                a[pos[0]][pos[1]]=1
+            data[k]=a.reshape(128*128)
+            k=k+1
+
+
+i=0
+for f1 in fs:
+    tmp_path = os.path.join(f, f1)
+    if not os.path.isdir(tmp_path):
+        # print(tmp_path[len(f):])
+            # 获得表情label
+            img_label = tmp_path[len(f)+4:len(f)+6]
+            # print(img_label)
+            if img_label == 'AN':
+                label[i] = 0
+            elif img_label == 'DI':
+                label[i] = 1
+            elif img_label == 'FE':
+                label[i] = 2
+            elif img_label == 'HA':
+                label[i] = 3
+            elif img_label == 'SA':
+                label[i] = 4
+            elif img_label == 'SU':
+                label[i] = 5
+            elif img_label == 'NE':
+                label[i] = 6
+            else:
+                print("get label error.......\n")
+            i = i + 1
+
+N_sample = label.size
+Face_label = np.zeros((N_sample, 7), dtype=np.float)
+
+for i in range(N_sample):
+    Face_label[i, int(label[i])] = 1.0
+
+
+
+X_train, X_test, y_train, y_test = train_test_split(data, label, test_size = 0.2)
+
+nb_classes = 7
+# 将类别向量(从0到nb_classes的整数向量)映射为二值类别矩阵，
+# 相当于将向量用one-hot重新编码
+Y_train = np_utils.to_categorical(y_train, nb_classes)
+Y_test = np_utils.to_categorical(y_test, nb_classes)
+
+model = Sequential()
+model.add(Dense(512, input_dim=16384, init='uniform', activation='relu'))
+model.add(Dropout(0.2))
+#model.add(Dense(32768, activation='relu'))
+#model.add(Dense(16384, activation='relu'))
+#model.add(Dense(8192, activation='relu'))
+#model.add(Dense(4096, activation='relu'))
+#model.add(Dense(2048, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.05))
+model.add(Dense(128, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
+model.add(Dense(7,activation='relu'))
+
+
+
+model.compile(loss='mean_squared_error', optimizer='rmsprop', metrics=['accuracy'])
+model.fit(X_train, Y_train, epochs=30, batch_size=10, verbose=2, validation_split=0.3,shuffle=1)
+model.summary()
